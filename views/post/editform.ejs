@@ -1,0 +1,102 @@
+<% layout("/layouts/boilerplate")  %>
+
+
+<% layout("/layouts/boilerplate")  %>
+<body class="min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('https://img.freepik.com/free-vector/white-elegant-texture-background-style_23-2148432200.jpg?ga=GA1.1.974913099.1726112611&semt=ais_hybrid');"></body>
+  <h5 class="text-3xl font-bold text-center mt-20">Edit  Your Post</h5>
+
+  <form action="/posts/<%= post._id %>?_method=PUT" method="post" class="mt-10 max-w-2xl mx-auto p-4 space-y-6" id="postForm"  enctype="multipart/form-data">
+    
+    <!-- Title Field -->
+    <div class="mb-3 form-box">
+      <label for="title" class="block text-lg font-medium text-gray-800 mb-2">Enter Title:</label>
+      <input type="text" name="post[title]" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500" id="title" placeholder="Enter an Impressive Title" required value="<%= post.title %>">
+      <div class="text-red-500 hidden" id="titleError">Please enter a title.</div>
+    </div>
+
+    <!-- Image Field -->
+    <div class="mb-3 form-box">
+      <label for="image" class="block text-lg font-medium text-gray-800 mb-2">Upload New Image:</label>
+      <input type="file" name="post[image]" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500" id="image" placeholder="Upload Image URL" >
+    </div>
+    <!-- Preview Image Field
+      -->
+    <div class="mb-3 form-box">
+      <label for="image" class="block text-lg font-medium text-gray-800 mb-2">Current Image:</label>
+      <img src="<%= post.image.url %>" alt="Post Image" class="w-full h-64 object-cover">
+    </div>
+    <!-- Category Field -->
+    <div class="mb-3 form-box">
+      <label for="category" class="block text-lg font-medium text-gray-800 mb-2">Select Category:</label>
+      <select name="post[categories]" id="categories" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500" required>
+        <option value="">Choose a Category</option>
+        <option value="technology">Technology</option>
+        <option value="fashion" <% if (post.categories === 'fashion') { %> selected <% } %>>Fashion</option>
+        <option value="food" <% if (post.categories === 'food') { %> selected <% } %> >Food</option>
+        <option value="travel" <% if (post.categories === 'travel') { %> selected <% } %>>Travel</option>
+        <option value="lifestyle" <% if (post.categories === 'lifestyle') { %> selected <% } %>>Lifestyle</option>
+        <option value="stocks" <% if (post.categories === 'stocks') { %> selected <% } %>>Stocks</option>
+        <option value="finance" <% if (post.categories === 'finance') { %> selected <% } %>>Finance</option>
+        <option value="crypto" <% if (post.categories === 'crypto') { %> selected <% } %>>Crypto</option>
+        <option value="startup" <% if (post.categories === 'startup') { %> selected <% } %>>Startup</option>
+        <option value="business" <% if (post.categories === 'business') { %> selected <% } %>>Business</option>
+        <option value="world" <% if (post.categories === 'world') { %> selected <% } %>>World</option>
+        <option value="fitness" <% if (post.categories === 'fitness') { %> selected <% } %>>Fitness</option>
+        <option value="weather" <% if (post.categories === 'weather') { %> selected <% } %>>Weather</option>
+        <option value="games" <% if (post.categories === 'games') { %> selected <% } %>>Games</option>
+        <option value="science" <% if (post.categories === 'science') { %> selected <% } %>>Science</option>
+      </select>
+      <div class="text-red-500 hidden" id="categoryError">Please select a category.</div>
+    </div>
+
+
+    <!-- Content Field -->
+    <div class="mb-3">
+      <label for="content" class="block text-lg font-medium text-gray-800 mb-2">Write about your post:</label>
+      <textarea id="content" name="post[info]" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500" rows="10" placeholder="Write your content here" required><%= post.info %></textarea>
+      <div class="text-red-500 hidden" id="contentError">Content is required.</div>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700">Submit Post</button>
+  </form>
+
+  <script>
+    // JavaScript validation
+    document.getElementById('postForm').addEventListener('submit', function(event) {
+      // Prevent form submission
+      event.preventDefault();
+
+      // Get form fields
+      const title = document.getElementById('title');
+      const content = document.getElementById('content');
+      const categories = document.getElementById('categories');
+      let isValid = true;
+
+      // Validate Title
+      if (title.value.trim() === '') {
+        title.classList.add('border-red-500');
+        document.getElementById('titleError').classList.remove('hidden');
+        isValid = false;
+      } else {
+        title.classList.remove('border-red-500');
+        document.getElementById('titleError').classList.add('hidden');
+      }
+
+      // Validate Content
+      if (content.value.trim() === '') {
+        content.classList.add('border-red-500');
+        document.getElementById('contentError').classList.remove('hidden');
+        isValid = false;
+      } else {
+        content.classList.remove('border-red-500');
+        document.getElementById('contentError').classList.add('hidden');
+      }
+
+      // If form is valid, submit the form
+      if (isValid) {
+        this.submit();
+      }
+    });
+  </script>
+</body>

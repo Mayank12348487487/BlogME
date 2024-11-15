@@ -1,0 +1,129 @@
+<%- layout("/layouts/boilerplate.ejs") %>
+
+<style>
+  /* Custom background image utility for full size */
+  
+
+
+  /* Fix the eye icon container */
+  .eye-icon-container {
+    position: absolute;
+    right: 0.75rem;
+    top: 15%;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    height: 100%;
+  }
+</style>
+
+<!-- Login Form Container -->
+<div class="background-image flex items-center justify-center">
+  <div class="w-full max-w-md bg-gradient-to-br from-white to-blue-50 shadow-2xl rounded-lg px-10 py-12 z-5 relative mx-auto mt-40 ">
+    <h2 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Login to your account</h2>
+
+    <form id="loginForm" action="/login" method="POST" class="space-y-6">
+      
+      <!-- Username Input -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700" for="username">
+          Username
+        </label>
+        <input
+          class="shadow-sm appearance-none border border-gray-300 rounded-lg w-full mt-2 py-2 px-4 text-gray-700 leading-tight focus:ring-2 focus:ring-blue-300 focus:outline-none transition duration-150 ease-in-out"
+          id="username" type="text" name="username" placeholder="Enter your username">
+        <p id="usernameError" class="hidden text-red-500 text-sm mt-1">Username is required</p>
+      </div>
+
+      <!-- Password Input with Eye Button -->
+      <div class="relative">
+        <label class="block text-sm font-semibold text-gray-700" for="password">
+          Password
+        </label>
+        <input
+          class="shadow-sm appearance-none border border-gray-300 rounded-lg w-full mt-2 py-2 px-4 text-gray-700 leading-tight focus:ring-2 focus:ring-blue-300 focus:outline-none transition duration-150 ease-in-out"
+          id="password" type="password" name="password" placeholder="Enter your password">
+        <!-- Eye Button -->
+        <span class="eye-icon-container" onclick="togglePasswordVisibility()">
+          <i class="fa-solid fa-eye" id="eye-icon"></i>
+          <i class="fa-solid fa-eye-slash hidden" id="eye-closed-icon"></i>
+        </span>
+        <p id="passwordError" class="hidden text-red-500 text-sm mt-1">Password is required</p>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="flex items-center justify-between mt-4">
+        <button
+          class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300"
+          type="submit">
+          Login
+        </button>
+      </div>
+
+      <!-- Sign-Up Link -->
+      <div class="text-center mt-4">
+        <a href="/signup" class="text-sm font-medium text-blue-600 hover:underline">
+          Don't have an account? Create one
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Toggle password visibility
+  function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('password');
+    const eyeClosedIcon = document.getElementById('eye-icon');
+    const eyeIcon = document.getElementById('eye-closed-icon');
+    
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      eyeIcon.classList.add('hidden');
+      eyeClosedIcon.classList.remove('hidden');
+    } else {
+      passwordInput.type = 'password';
+      eyeIcon.classList.remove('hidden');
+      eyeClosedIcon.classList.add('hidden');
+    }
+  }
+
+  // Form Validation Script
+  document.getElementById('loginForm').addEventListener('submit', function(event) {
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const usernameError = document.getElementById('usernameError');
+    const passwordError = document.getElementById('passwordError');
+
+    let isValid = true;
+
+    // Validate username input
+    if (!usernameInput.value) {
+      usernameInput.classList.add('border-red-500');
+      usernameInput.classList.remove('border-gray-300');
+      usernameError.classList.remove('hidden');
+      isValid = false;
+    } else {
+      usernameInput.classList.remove('border-red-500');
+      usernameInput.classList.add('border-gray-300');
+      usernameError.classList.add('hidden');
+    }
+
+    // Validate password input
+    if (!passwordInput.value) {
+      passwordInput.classList.add('border-red-500');
+      passwordInput.classList.remove('border-gray-300');
+      passwordError.classList.remove('hidden');
+      isValid = false;
+    } else {
+      passwordInput.classList.remove('border-red-500');
+      passwordInput.classList.add('border-gray-300');
+      passwordError.classList.add('hidden');
+    }
+
+    if (!isValid) {
+      event.preventDefault();
+    }
+  });
+</script>

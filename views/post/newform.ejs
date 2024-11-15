@@ -1,0 +1,99 @@
+<% layout("/layouts/boilerplate")  %>
+<body class="min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('https://img.freepik.com/free-vector/white-elegant-texture-background-style_23-2148432200.jpg?ga=GA1.1.974913099.1726112611&semt=ais_hybrid');">
+  <h5 class="text-3xl font-bold text-center mt-20">Create Your Post</h5>
+
+  <form action="/posts" method="post" class="mt-10 max-w-2xl mx-auto p-4 space-y-6" id="postForm" novalidate enctype="multipart/form-data">
+    
+    <!-- Title Field -->
+    <div class="mb-3 form-box">
+      <label for="title" class="block text-lg font-medium text-gray-800 mb-2">Enter Title:</label>
+      <input type="text" name="post[title]" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500" id="title" placeholder="Enter an Impressive Title" required>
+      <div class="text-red-500 hidden" id="titleError">Please enter a title.</div>
+    </div>
+
+    <!-- Image Field -->
+    <div class="mb-3 form-box">
+      <label for="image" class="block text-lg font-medium text-gray-800 mb-2">Upload Image:</label>
+      <input type="file" name="post[image]" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500" id="image" required>
+    </div>
+
+    <!-- Category Field -->
+    <div class="mb-3 form-box">
+      <label for="category" class="block text-lg font-medium text-gray-800 mb-2">Select Category:</label>
+      <select name="post[categories]" id="categories" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500" required>
+        <option value="">Choose a Category</option>
+        <option value="technology">Technology</option>
+        <option value="fashion">Fashion</option>
+        <option value="food">Food</option>
+        <option value="travel">Travel</option>
+        <option value="lifestyle">Lifestyle</option>
+        <option value="stocks">Stocks</option>
+        <option value="finance">Finance</option>
+        <option value="crypto">Crypto</option>
+        <option value="startup">Startup</option>
+        <option value="business">Business</option>
+        <option value="world">World</option>
+        <option value="fitness">Fitness</option>
+        <option value="weather">Weather</option>
+        <option value="games">Games</option>
+        <option value="science">Science</option>
+      </select>
+      <div class="text-red-500 hidden" id="categoryError">Please select a category.</div>
+    </div>
+
+    <!-- Text Area for Content -->
+    <div class="mb-3">
+      <label class="block text-lg font-medium text-gray-800 mb-2">Write about your post:</label>
+    
+      <textarea id="content" name="post[info]" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500" rows="10" required></textarea>
+      <div class="text-red-500 hidden" id="contentError">Content is required.</div>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700">Submit Post</button>
+  </form>
+
+  <script>
+    document.getElementById('postForm').addEventListener('submit', function(event) {
+      const title = document.getElementById('title');
+      const category = document.getElementById('categories');
+      const content = document.getElementById('content');
+      let isValid = true;
+
+      // Validate Title
+      if (title.value.trim() === '') {
+        title.classList.add('border-red-500');
+        document.getElementById('titleError').classList.remove('hidden');
+        isValid = false;
+      } else {
+        title.classList.remove('border-red-500');
+        document.getElementById('titleError').classList.add('hidden');
+      }
+
+      // Validate Category
+      if (category.value === '') {
+        category.classList.add('border-red-500');
+        document.getElementById('categoryError').classList.remove('hidden');
+        isValid = false;
+      } else {
+        category.classList.remove('border-red-500');
+        document.getElementById('categoryError').classList.add('hidden');
+      }
+
+      // Validate Content
+      if (content.value.trim() === '') {
+        content.classList.add('border-red-500');
+        document.getElementById('contentError').classList.remove('hidden');
+        isValid = false;
+      } else {
+        content.classList.remove('border-red-500');
+        document.getElementById('contentError').classList.add('hidden');
+      }
+
+      // If form is not valid, prevent submission
+      if (!isValid) {
+        event.preventDefault();
+      }
+    });
+  </script>
+</body>

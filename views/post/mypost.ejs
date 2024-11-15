@@ -1,0 +1,91 @@
+<% layout("/layouts/boilerplate")  %>
+
+<!-- Title -->
+<h1 class="text-4xl font-bold text-center text-gray-800 my-8">Your Posts</h1>
+
+<!-- Check if there are any posts -->
+<% if (posts.length === 0) { %>
+  <div class="max-w-6xl mx-auto px-4 text-center mt-10">
+    <p class="text-xl text-gray-600">You haven't uploaded any posts.</p>
+    <a href="/posts/new" class="mt-4 inline-block bg-indigo-600 text-white px-6 py-2 rounded-md shadow-md hover:bg-indigo-500 transition duration-300">
+      Create Your First Post
+    </a>
+  </div>
+<% } else { %>
+  <!-- Posts Grid -->
+  <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    <% posts.forEach(post => { %>
+      <div class="relative group">
+        <a href="/posts/<%= post._id %>/analytics" class="block">
+          <!-- Post Image -->
+          <img src="<%= post.image.url %>" alt="<%= post.title %>" class="w-full h-64 object-cover rounded-lg shadow-md">
+
+          <!-- Hover effect: Show title and likes -->
+          <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-lg transition duration-300 ease-in-out">
+            <div class="text-white text-lg font-semibold">
+              <%= post.title %>
+              <div class="mt-2 text-sm">Likes: <%= post.likes.length %></div> <!-- Display total likes -->
+            </div>
+          </div>
+        </a>
+
+        <!-- Three-dot button -->
+        <div class="absolute top-2 right-2">
+          <button class="text-white bg-transparent p-3 rounded-full focus:outline-none" id="menuButton<%= post._id %>">
+            <!-- Larger and bolder three-dot icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 font-bold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 6v.01M12 12v.01M12 18v.01" />
+            </svg>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div id="menu<%= post._id %>" class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg hidden z-10">
+            <a href="/posts/<%= post._id %>/edit" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a>
+            <button type="button" class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100" onclick="showDeleteConfirmation('<%= post._id %>')">Delete</button>
+          </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="confirmDelete<%= post._id %>" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
+          <div class="bg-white rounded-md p-4 text-center">
+            <p class="font-semibold">Are you sure you want to delete this post?</p>
+            <div class="mt-4">
+              <form action="/posts/<%= post._id %>?_method=DELETE" method="POST" class="inline">
+                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md">Delete</button>
+              </form>
+              <button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md ml-2" onclick="hideDeleteConfirmation('<%= post._id %>')">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dropdown JS (Using Vanilla JS to toggle visibility) -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const menuButton = document.getElementById('menuButton<%= post._id %>');
+          const menu = document.getElementById('menu<%= post._id %>');
+
+          menuButton.addEventListener('click', function (event) {
+            event.stopPropagation(); // Prevent the click from triggering the anchor link
+            menu.classList.toggle('hidden');
+          });
+
+          // Close the dropdown if clicked outside
+          document.addEventListener('click', function(event) {
+            if (!menuButton.contains(event.target) && !menu.contains(event.target)) {
+              menu.classList.add('hidden');
+            }
+          });
+        });
+
+        function showDeleteConfirmation(postId) {
+          document.getElementById('confirmDelete' + postId).classList.remove('hidden');
+        }
+
+        function hideDeleteConfirmation(postId) {
+          document.getElementById('confirmDelete' + postId).classList.add('hidden');
+        }
+      </script>
+    <% }) %>
+  </div>
+<% } %>

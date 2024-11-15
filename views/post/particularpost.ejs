@@ -1,0 +1,144 @@
+<% layout("/layouts/boilerplate") %>
+<body class="bg-gray-100">
+
+    <!-- Title and Date -->
+    <h5 class="text-3xl md:text-4xl lg:text-5xl font-bold text-center mt-20"><%= post.title %>...</h5>
+    
+    <p class="text-gray-600 text-center mt-3">
+        <i><%= post.created_at.toString().split(" ")[4] %></i>&nbsp;&nbsp;
+        <i><%= post.created_at.toString().split(" ").slice(0, 4).join(" ") %></i>
+    </p>
+    
+    <!-- Image Container (relative to position the comment button) -->
+    <div class="relative w-full md:w-3/4 lg:w-[80%] mx-auto mt-10">
+        <!-- Centered Image -->
+        <img src="<%= post.image.url %>" class="w-full h-auto rounded-lg object-cover" alt="image">
+
+<!-- Like and Comment Section in Flex Layout -->
+<div class="mt-4 flex flex-row justify-between items-center space-x-2">
+    <!-- Like Button -->
+    <form action="/posts/<%= post._id %>/likes" method="POST" class="flex items-center space-x-2">
+        <button type="submit" class="flex items-center space-x-2 text-gray-500 <%= currUser ? 'hover:text-blue-500' : 'cursor-not-allowed' %>" <%= currUser ? '' : 'disabled' %> >
+            <% if (currUser && post.likes.includes(currUser._id)) { %>
+                <i class="fa-solid fa-thumbs-up fa-2xl" style="color: #74C0FC;"></i>
+            <% } else { %>
+                <i class="fa-regular fa-thumbs-up fa-2xl" style="color: #74C0FC;"></i>
+            <% } %>
+        </button>
+        <span class="text-gray-700 font-semibold"><%= post.likes.length %> Likes</span>
+    </form>
+
+    <!-- Comment Button -->
+    <div class="flex items-center space-x-2">
+        <button class="flex items-center text-gray-500 <%= currUser ? 'hover:text-blue-500' : 'cursor-not-allowed' %>" onclick="toggleOffCanvas()" <%= currUser ? '' : 'disabled' %> >
+            <i class="fa-regular fa-comment text-2xl"></i>
+            <span class="ml-1" >Comment</span>
+        </button>
+    </div>
+</div>
+
+<!-- Login Prompt -->
+<% if (!currUser) { %>
+    <div class="text-red-500 text-center mt-2">
+        Please <a href="/login" class="text-blue-500 underline">log in</a> to like and comment.
+    </div>
+<% } %>
+
+    
+    <p class="mt-5 text-center md:text-left">Created By: <i class="text-black font-bold">@ <%= post.owner.username %></i></p>
+
+    <!-- Post Content -->
+    <div class="quill-container mt-10 px-4 md:px-6 lg:px-8">
+        <p class="text-gray-800 text-lg leading-relaxed">
+            <%= post.info %>
+        </p>
+    </div>
+    
+    <!-- Off-canvas for comment submission -->
+    <div id="commentOffcanvas" class="fixed right-0 top-0 w-80 h-full bg-white shadow-lg transition-transform transform translate-x-full z-50">
+        <div class="p-4">
+            <!-- Comment List -->
+            <h6 class="font-bold">Comments:</h6>
+            <div id="commentList" class="mt-4 space-y-4">
+                <% (post.comments || []).forEach(comment => { %>
+                    <div class="flex items-start bg-white shadow-md rounded-lg p-4 relative">
+                        <div class="mr-3">
+                            <i class="fa-solid fa-user-tie fa-2xl text-gray-500"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <span class="font-bold text-gray-800"><%= comment.owner.username %></span>
+                            <div class="text-gray-700 mt-1">
+                                <%= comment.text %>
+                            </div>
+                        </div>
+
+                        <% if (currUser && currUser._id.equals(comment.owner._id)) { %>
+                            <div class="relative">
+                                <button onclick="toggleDropdown(event)" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                                <div class="hidden dropdown-menu absolute right-0 mt-2 w-32 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                                    <form action="/posts/<%= post._id %>/comments/<%= comment._id %>?_method=DELETE" method="POST">
+                                        <button type="submit" class="block text-white bg-red-500 rounded-lg hover:bg-red-700 px-4 py-2 w-full text-left">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+
+        <!-- Comment Form -->
+        <div class="fixed bottom-0 inset-x-0 bg-white py-2 px-4 border-t border-gray-200">
+            <form action="/posts/<%= post._id %>/comments" method="POST" class="flex items-center space-x-2">
+                <input type="text" name="comment[text]" placeholder="Type a comment..." class="flex-grow p-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <button type="submit" class="bg-blue-500 text-white p-3 rounded-full hover:bg-blue-600 transition-all">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript to handle the off-canvas toggle and outside click detection -->
+    <script>
+        function toggleOffCanvas() {
+            const offcanvas = document.getElementById('commentOffcanvas');
+            const overlay = document.getElementById('overlay');
+
+            offcanvas.classList.toggle('translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Hide off-canvas when clicking outside
+        document.addEventListener('click', function(event) {
+            const offcanvas = document.getElementById('commentOffcanvas');
+            const overlay = document.getElementById('overlay');
+
+            if (!offcanvas.contains(event.target) && !event.target.closest('.fa-comment')) {
+                offcanvas.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        });
+
+        // Dropdown toggle function
+        function toggleDropdown(event) {
+            const dropdown = event.currentTarget.nextElementSibling;
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Close dropdown if clicked outside
+        document.addEventListener('click', function(event) {
+            const dropdowns = document.querySelectorAll('.dropdown-menu');
+            dropdowns.forEach(dropdown => {
+                if (!dropdown.previousElementSibling.contains(event.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
+    <!-- Overlay for off-canvas -->
+    <div id="overlay" class="fixed inset-0 bg-black opacity-50 hidden z-40"></div>
+
+</body>

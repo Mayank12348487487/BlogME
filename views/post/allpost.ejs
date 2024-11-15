@@ -1,0 +1,98 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  /* Hides the scrollbar but allows scrolling */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  #category-container {
+    display: flex;
+    flex-wrap: nowrap; /* Items will not wrap */
+    padding: 10px;
+    overflow-x: auto; /* Allows horizontal scrolling */
+    scrollbar-width: none; /* Hide scrollbar */
+  }
+  #category-container::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Webkit browsers */
+  }
+  /* Hover effect for the categories */
+  .category-item {
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  .category-item:hover {
+    transform: scale(1.1); /* Slightly enlarges the icon and text */
+    color: #3498db; /* Changes text color on hover */
+  }
+  .category-item i {
+    transition: color 0.3s ease; /* Smooth color transition for icons */
+  }
+  .category-item:hover i {
+    color: #3498db; /* Changes icon color on hover */
+  }
+  /* Card styling */
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensure cards take full height */
+  }
+</style>
+
+<!-- Icon Navigation -->
+<!-- Icon Navigation -->
+<div class="relative flex items-center justify-center py-4 bg-white shadow ">
+  <!-- Categories Container (Scrollable) -->
+  <div id="category-container" class="flex justify-start items-center space-x-2 sm:space-x-4 lg:space-x-1 px-4 bg-white overflow-x-auto scroll-smooth no-scrollbar whitespace-nowrap">
+    <% const categoryLinks = [
+      { name: 'Technology', icon: 'fa-microchip' },
+      { name: 'Fashion', icon: 'fa-shirt' },
+      { name: 'Food', icon: 'fa-bowl-food' },
+      { name: 'Travel', icon: 'fa-route' },
+      { name: 'Lifestyle', icon: 'fa-heart-pulse' },
+      { name: 'Stocks', icon: 'fa-money-bill-trend-up' },
+      { name: 'Finance', icon: 'fa-coins' },
+      { name: 'Crypto', icon: 'fa-dollar-sign' },
+      { name: 'Startup', icon: 'fa-stairs' },
+      { name: 'Business', icon: 'fa-business-time' },
+      { name: 'World', icon: 'fa-earth-europe' },
+      { name: 'Fitness', icon: 'fa-dumbbell' },
+      { name: 'Weather', icon: 'fa-cloud' },
+      { name: 'Games', icon: 'fa-gamepad' },
+      { name: 'Science', icon: 'fa-microscope' },
+    ]; %>
+    
+    <% categoryLinks.forEach(category => { %>
+      <a href="/posts/categories/<%= category.name.toLowerCase() %>" class="flex-shrink-0 w-24 sm:w-28">
+        <div class="category-item flex flex-col items-center">
+          <i class="fa-solid <%= category.icon %>"></i>
+          <span class="mt-2 text-xs sm:text-sm"><%= category.name %></span>
+        </div>
+      </a>
+    <% }); %>
+  </div>
+</div>
+
+<!-- Wrapper to control width based on screen size -->
+<div class="w-full sm:w-4/5 md:w-3/4 lg:w-full mx-auto  ">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 sm:px-8 md:px-12 lg:px-16 py-6">
+    <% for (let post of allpost) { %>
+    <a href="/posts/<%= post._id %>" class="no-underline group">
+      <div class="post-card relative bg-white shadow-lg rounded-lg overflow-hidden mt-8 transform transition-transform hover:scale-105 duration-300 hover:shadow-2xl">
+        <img src="<%= post.image.url %>" class="w-full h-60 object-cover transition-opacity duration-300 group-hover:opacity-80" alt="image">
+        
+        <div class="p-4">
+          <h5 class="text-lg font-semibold text-gray-800 group-hover:text-blue-500 transition-colors duration-300"><%= post.title %></h5>
+          <p class="text-gray-600 text-sm truncate group-hover:text-gray-900 transition-colors duration-300">
+            <%= post.info %>
+          </p>
+        </div>
+      </div>
+    </a>
+    <% } %>
+  </div>
+</div>
+
+

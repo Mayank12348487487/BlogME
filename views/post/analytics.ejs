@@ -1,0 +1,41 @@
+<% layout("/layouts/boilerplate") %>
+
+<h1 class="text-4xl font-bold text-center text-gray-800 my-8"><%= post.title %></h1>
+
+<div class="max-w-6xl mx-auto px-4 text-center">
+
+    <div class="post-card bg-white shadow-md rounded-lg p-4 mb-4">
+        <img src="<%= post.image.url %>" alt="<%= post.title %>" class="w-full h-64 object-cover rounded-lg">  
+        
+        <!-- Likes Section -->
+        <div class="flex justify-between items-center mt-2">
+            <div class="text-lg font-semibold">Total Likes: <%= totalLikes %></div>
+        </div>
+    </div>
+
+    <div class="comments-section mt-6">
+        <h3 class="text-xl font-semibold">All Comments:</h3>
+        <ul class="list-none mt-4">
+            <% post.comments.forEach(comment => { %>
+                <li class="border rounded-lg shadow-sm mb-4 p-4 flex flex-col">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-start">
+                            <img src="https://cdn-icons-png.flaticon.com/128/1077/1077114.png" alt="<%= comment.owner.username %>'s avatar" class="w-12 h-12 rounded-full mr-3"> <!-- Avatar image -->
+                            <div>
+                                <span class="font-bold"><%= comment.owner.username %>:</span>
+                                <div class="text-gray-700"><%= comment.text %></div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-500 ml-auto mt-1"><%= new Date(comment.created_at).toLocaleDateString() %></div> <!-- Display the date on top right -->
+                    </div>
+                </li>
+            <% }) %>
+        </ul>
+    </div>
+
+    <div class="mt-8">
+        <a href="/posts/myposts" class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-md shadow-md hover:bg-indigo-500 transition duration-300">
+            Back to Posts
+        </a>
+    </div>
+</div>

@@ -1,0 +1,169 @@
+<nav class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+
+            <!-- Left Logo Section -->
+            <div class="flex-shrink-0">
+                <a href="/posts" class="flex items-center">
+                    <i class="fa-brands fa-slack fa-xl"></i>
+                    <span class="ml-2 text-2xl font-semibold text-gray-800">Blog Me</span>
+                </a>
+            </div>
+
+            <!-- Centered Search Input with Button -->
+            <div class="hidden md:flex flex-grow justify-center mx-4">
+                <div class="relative w-72">
+                    <input id="search-input" type="text" placeholder="Search..." class="w-full p-2 pr-12 border rounded-md" autocomplete="off">
+                    <button onclick="searchPosts()" class="absolute right-1 top-1/2 transform -translate-y-1/2 text-black px-3 py-1 rounded-md">
+                        <i class="fa-solid fa-search"></i>
+                    </button>
+                    <ul id="suggestion-box" class="absolute z-10 hidden bg-white border rounded-md mt-1 w-full max-h-48 overflow-auto shadow-lg">
+                        <!-- Suggestions will be populated here -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right User Menu Section -->
+            <div class="hidden md:block">
+                <div class="ml-10 flex items-baseline space-x-4">
+                    <a href="/posts" class="text-black font-semibold px-3 py-2 rounded-md text-md font-medium">Home</a>
+                    <a href="/posts/new" class="text-black font-semibold px-3 py-2 rounded-md text-md font-medium">Create Post</a>
+                    <div class="relative">
+                        <button id="user-menu-button" class="focus:outline-none">
+                            <i class="fa-solid fa-circle-user fa-2xl"></i>
+                        </button>
+                        <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                            <% if(currUser){ %>
+                            <a href="/posts/myposts" class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 font-bold">My Post</a>
+                            <% } %>
+                        
+                            <% if(!currUser){ %>
+                            <a href="/login" class="block px-4 py-2 text-sm text-green-500 hover:bg-gray-100 font-bold">Login</a>
+                            <% } else { %>
+                            <a href="/logout" class="block px-4 py-2 text-sm text-red-500 hover:bg-gray-100 font-bold"> 
+                                <i class="fa-solid fa-right-from-bracket"></i>&nbsp;&nbsp;Logout
+                            </a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile View: Search and User Menu -->
+            <div class="md:hidden flex items-center space-x-2">
+                <div class="relative w-40">
+                    <input id="mobile-search-input" type="text" placeholder="Search..." class="w-full p-1 pr-10 border rounded-md" autocomplete="off">
+                    <button onclick="searchPosts()" class="absolute right-1 top-1/2 transform -translate-y-1/2 text-black px-3 py-1 rounded-md">
+                        <i class="fa-solid fa-search"></i>
+                    </button>
+                    <ul id="mobile-suggestion-box" class="absolute z-10 hidden bg-white border rounded-md mt-1 w-full max-h-48 overflow-auto shadow-lg">
+                        <!-- Mobile suggestions will be populated here -->
+                    </ul>
+                </div>
+                <button id="mobile-user-menu-button" class="text-gray-800 focus:outline-none">
+                    <i class="fa-solid fa-circle-user fa-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile User Menu, hidden by default -->
+    <div id="mobile-user-menu" class="hidden md:hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 text-center font-bold">
+            <a href="/posts" class="text-gray-800 hover:text-indigo-500 block px-3 py-2 rounded-md text-base ">Home</a>
+            <a href="/posts/new" class="text-gray-800 hover:text-indigo-500 block px-3 py-2 rounded-md text-base ">Create a Post</a>
+            <% if(currUser){ %>
+            <a href="/posts/myposts" class="text-gray-800 hover:text-indigo-500 block px-3 py-2 rounded-md text-base ">My Post</a>
+            <% } %>
+          
+            <% if(!currUser){ %>
+            <a href="/login" class="text-green-500 hover:text-indigo-500 block px-3 py-2 rounded-md text-base ">Login</a>
+            <% } else { %>
+            <a href="/logout" class="text-red-500 hover:text-indigo-500 block px-3 py-2 rounded-md text-base "> 
+                <i class="fa-solid fa-right-from-bracket"></i>&nbsp;&nbsp;Logout
+            </a>
+            <% } %>
+        </div>
+    </div>
+</nav>
+
+<script>
+    const categories = [
+        { name: 'Technology', icon: 'fa-microchip' },
+        { name: 'Fashion', icon: 'fa-shirt' },
+        { name: 'Food', icon: 'fa-bowl-food' },
+        { name: 'Travel', icon: 'fa-route' },
+        { name: 'Lifestyle', icon: 'fa-heart-pulse' },
+        { name: 'Stocks', icon: 'fa-money-bill-trend-up' },
+        { name: 'Finance', icon: 'fa-coins' },
+        { name: 'Crypto', icon: 'fa-dollar-sign' },
+        { name: 'Startup', icon: 'fa-stairs' },
+        { name: 'Business', icon: 'fa-business-time' },
+        { name: 'World', icon: 'fa-earth-europe' },
+        { name: 'Fitness', icon: 'fa-dumbbell' },
+        { name: 'Weather', icon: 'fa-cloud' },
+        { name: 'Games', icon: 'fa-gamepad' },
+        { name: 'Science', icon: 'fa-microscope' }
+    ];
+
+    const searchInput = document.getElementById('search-input');
+    const mobileSearchInput = document.getElementById('mobile-search-input');
+    const suggestionBox = document.getElementById('suggestion-box');
+    const mobileSuggestionBox = document.getElementById('mobile-suggestion-box');
+
+    function updateSuggestions(inputElement, suggestionBoxElement, categoryList) {
+        const inputValue = inputElement.value.toLowerCase();
+        suggestionBoxElement.innerHTML = ''; // Clear previous suggestions
+        suggestionBoxElement.classList.add('hidden'); // Hide initially
+
+        if (inputValue) {
+            const filteredCategories = categoryList.filter(category => category.name.toLowerCase().includes(inputValue));
+
+            filteredCategories.forEach(category => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('px-4', 'py-2', 'cursor-pointer', 'hover:bg-gray-200');
+                listItem.innerText = category.name;
+
+                listItem.addEventListener('click', function() {
+                    window.location.href = `/posts/categories/${category.name.toLowerCase()}`;
+                });
+
+                suggestionBoxElement.appendChild(listItem);
+            });
+
+            if (filteredCategories.length > 0) {
+                suggestionBoxElement.classList.remove('hidden'); // Show suggestions if there are matches
+            }
+        }
+    }
+
+    searchInput.addEventListener('input', function() {
+        updateSuggestions(searchInput, suggestionBox, categories);
+    });
+
+    mobileSearchInput.addEventListener('input', function() {
+        updateSuggestions(mobileSearchInput, mobileSuggestionBox, categories);
+    });
+
+    function searchPosts() {
+        const inputValue = searchInput.value.trim() || mobileSearchInput.value.trim();
+        if (inputValue) {
+            // Redirect to search results page or handle search logic here
+            window.location.href = `/search?q=${encodeURIComponent(inputValue)}`;
+        } else {
+            searchInput.style.borderColor = 'red';
+        }
+    }
+
+    // Toggle user menu for mobile
+    document.getElementById('mobile-user-menu-button').addEventListener('click', function() {
+        const mobileUserMenu = document.getElementById('mobile-user-menu');
+        mobileUserMenu.classList.toggle('hidden');
+    });
+
+    // Toggle user menu for desktop
+    document.getElementById('user-menu-button').addEventListener('click', function() {
+        const userMenu = document.getElementById('user-menu');
+        userMenu.classList.toggle('hidden');
+    });
+</script>

@@ -1,0 +1,148 @@
+*{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    font-family: "Roboto Slab", serif;
+    scroll-behavior: smooth;
+    
+
+}
+
+/* Navbar Styling Starts from Here  */
+.navbar11{
+
+height: 8.8vh;
+
+display: flex;
+align-items: center;
+padding-top: 1rem;
+
+background-color: white;
+
+
+
+}
+.logo {
+    display: flex;
+    margin-left: 4rem;
+    align-items: center;
+    
+}
+.logo p{
+    font-size: 2rem;
+    font-weight: 600;
+    padding-right: 1rem;
+}
+.logo i{
+    font-size: 1.5rem;
+    padding-bottom: 1rem;
+}
+.nav-items{
+    
+    margin-left: 50rem;
+}
+.nav-items a{
+    padding-left: 1.5rem;
+   
+}
+.nav-items .btn11{
+    height: 2.2rem;
+    width: 8rem;
+  border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: black;
+    color: white;
+    border: none;
+    margin-bottom: 1rem
+
+    
+
+}
+.nav-items .btn11:hover{
+    color: black;
+    background-color: white;
+    border: 3px solid black;
+
+}
+.nav-items .home{
+    font-size:  1.2rem; 
+    color: black;
+    text-decoration: none;
+   
+}
+
+.nav-items .home:hover{
+    
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+/* Card Styling Starts Form here */
+    
+    .card{
+        border: none !important;
+        opacity: 1;
+    }
+    .card:hover{
+        opacity: 0.8;
+    }
+   .card-img-top{
+    border-radius: 1rem !important;
+    width: 100% !important;
+    object-fit: cover !important;
+   }
+    
+   /* Now styling a particular Post  */
+ 
+   .partiImage{
+    opacity:1 !important;
+    border-radius: 20px !important;
+    
+   }
+   .partiImage:hover{
+    opacity: 0.9 !important;
+    
+    
+   }
+ .date{
+    margin-top: 5rem;
+    opacity: 0.8;
+ }
+
+
+ /* Footer Styling */
+
+ .f-info-links a{
+    text-decoration: none;
+    color: #222222;
+
+ }
+ .f-info-links a:hover{
+    text-decoration: underline;
+ }
+ .f-info-links{
+    width: 100%;
+ }
+ .f-info-socials{
+    width: 100%;
+    font-size: 1.8rem;
+    
+   
+ }
+ .f-info-socials i{
+    padding-left: 1rem;
+ }
+ .f-info{
+    text-align: center;
+    display: flex;
+    height: 12rem;
+    background-color: #ebebeb;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: space-evenly;
+    
+
+ }
